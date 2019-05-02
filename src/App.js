@@ -8,24 +8,46 @@ import {
   Button,
   InputGroup,
   Form,
-  FormControl
+  FormControl, 
+  Table
 } from "react-bootstrap";
 import FetchFlights from "./FetchFlights";
 import "./App.css";
 
 function RowItem(props) {
-  return <tr>{props.value}</tr>;
+  return <tr>
+          <td>{props.value.startCountry}</td>
+          <td>{props.value.endCountry}</td>
+          <td>{props.value.departureDate}</td>
+          <td>{props.value.departureTime}</td>
+          <td>{props.value.duration}</td>
+          <td>{props.value.numberOfSeats}</td>
+          <td>{props.value.airline}</td>
+          <td>{props.value.price}</td>
+        </tr>;
+}
+function MakeFlightTable(props) {
+  const flights = props.flights;
+  const thead = <thead>
+                  <tr>
+                    <th>To</th>
+                    <th>From</th>
+                    <th>Date</th>
+                    <th>Departure time</th>
+                    <th>Duration</th>
+                    <th>Seats left</th>
+                    <th>Airlines</th>
+                    <th>Prices</th>
+                  </tr>
+                </thead>
+  const RowItems = flights.map((f) =>
+    <RowItem key={f.id} value={f} />);
+  return <Table>{thead}<tbody>{RowItems}</tbody></Table>;
 }
 
-function MakeFlightTable({ flights }) {
-  console.log("FLIGHTS" + flights)
-  const RowItems = flights.map(f => <RowItem key={f.id} value={f} />);
-  return <table>{RowItems}</table>;
-}
 
 function TableDemo(props) {
   if (props.flights.length > 0) {
-    console.log(props.flights);
     return (
       <div>
         <h2>All Flights</h2>
