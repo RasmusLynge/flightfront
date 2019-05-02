@@ -33,8 +33,8 @@ function MakeFlightTable(props) {
   const thead = (
     <thead>
       <tr>
-        <th>To</th>
         <th>From</th>
+        <th>To</th>
         <th>Date</th>
         <th>Departure time</th>
         <th>Duration</th>
@@ -53,36 +53,66 @@ function MakeFlightTable(props) {
   );
 }
 
-function TableDemo(props) {
-  if (props.flights.length > 0) {
-    return (
-      <Jumbotron>
-        <h2>All Flights</h2>
-        <MakeFlightTable flights={props.flights} />
-      </Jumbotron>
-    );
-  } else if (props.flights.msg === "No flights") {
-    return (
-      <Jumbotron>
-        <h2>No Flights for this day</h2>
-      </Jumbotron>)
-  } else {
-    return (
-      <Jumbotron>
-        <h2>Search for Flights</h2>
-      </Jumbotron>
-    );
-  }
-}
-
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { from: "", to: "", date: "", flightData: [] };
+    this.state = { from: "", to: "", date: "", flightData: [], sortData: "" };
   }
+
+  TableDemo = ({ flights }) => {
+    if (flights.length > 0) {
+      return (
+        <Jumbotron>
+          <h2>All Flights</h2>
+          <p>Sort Flights</p>
+          <select id="sortData" onChange={this.onChange}>
+            <option value="">Please Select an option</option>
+            <option value="price">By price</option>
+            <option value="seats">By Seats</option>
+            <option value="airline">By Airline</option>
+          </select>
+          <MakeFlightTable flights={flights} />
+        </Jumbotron>
+      );
+    } else if (flights.msg === "No flights") {
+      return (
+        <Jumbotron>
+          <h2>No Flights for this day</h2>
+        </Jumbotron>
+      );
+    } else {
+      return (
+        <Jumbotron>
+          <h2>Search for Flights</h2>
+        </Jumbotron>
+      );
+    }
+  };
+
+  sortFlights = evt => {
+    if (evt.target.value === "price") {
+      let flightsSort = this.state.flightData.sort((a, b) =>
+        Number(a.price) > Number(b.price) ? 1 : -1
+      );
+      this.setState({ flightData: flightsSort });
+    }
+    if (evt.target.value === "seats") {
+      let flightsSort = this.state.flightData.sort((a, b) =>
+        Number(a.numberOfSeats) > Number(b.numberOfSeats) ? 1 : -1
+      );
+      this.setState({ flightData: flightsSort });
+    }
+    if (evt.target.value === "airline") {
+      let flightsSort = this.state.flightData.sort((a, b) =>
+        a.airline > b.airline ? 1 : -1
+      );
+      this.setState({ flightData: flightsSort });
+    }
+  };
 
   onChange = evt => {
     this.setState({ [evt.target.id]: evt.target.value });
+    this.sortFlights(evt);
   };
 
   search = async evt => {
@@ -134,7 +164,7 @@ class App extends React.Component {
             <Button type="submit">Submit</Button>
           </Form>
         </Navbar>
-        <TableDemo flights={this.state.flightData} />
+        <this.TableDemo flights={this.state.flightData} />
       </div>
     );
   }

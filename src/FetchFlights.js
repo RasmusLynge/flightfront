@@ -11,7 +11,7 @@ class flightFetch {
 
   fetchData = async (url) => {
     const options = await this.makeOptions("GET");
-    return fetch(endPoint  + url , options).then(handleHttpErrors);
+    return fetch(endPoint  + url , options).then(handleHttpErrors)
   };
 
   directions = (fromCountry, toCountry, date) => {
