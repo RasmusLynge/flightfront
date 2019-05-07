@@ -67,9 +67,11 @@ class App extends React.Component {
           <p>Sort Flights</p>
           <select id="sortData" onChange={this.onChange}>
             <option value="">Please Select an option</option>
-            <option value="price">By price</option>
+            <option value="price">By Price</option>
             <option value="seats">By Seats</option>
             <option value="airline">By Airline</option>
+            <option value="departure_time">By Departure time</option>
+            <option value="duration">By Duration</option>
           </select>
           <MakeFlightTable flights={flights} />
         </Jumbotron>
@@ -108,8 +110,39 @@ class App extends React.Component {
       );
       this.setState({ flightData: flightsSort });
     }
+    if (evt.target.value === "departure_time") {
+      //let flightDepartureTimes = this.state.flightData.map(a => a.departureTime);
+      //console.log("departureTimes", flightDepartureTimes);
+      let flightsSort = this.sortTimes(this.state.flightData, "departure_time");
+      this.setState({ flightData: flightsSort });
+    }
+    if (evt.target.value === "duration") {
+      //let duration = this.state.flightData.map(a => a.duration);
+      //console.log("duration", duration);
+      let flightsSort = this.sortTimes(this.state.flightData, "duration");
+      this.setState({ flightData: flightsSort });
+    }
   };
+  sortTimes(array, sortby) {
+    if (sortby === "departure_time") {
+      return array.sort(function (a, b) {
+        if (parseInt(a.departureTime.split(":")[0]) - parseInt(b.departureTime.split(":")[0]) === 0) {
+          return parseInt(a.departureTime.split(":")[1]) - parseInt(b.departureTime.split(":")[1]);
+        } else {
+          return parseInt(a.departureTime.split(":")[0]) - parseInt(b.departureTime.split(":")[0]);
+        }
+      })
+    } else if (sortby === "duration") {
+      return array.sort(function (a, b) {
+        if (parseInt(a.duration.split(":")[0]) - parseInt(b.duration.split(":")[0]) === 0) {
+          return parseInt(a.duration.split(":")[1]) - parseInt(b.duration.split(":")[1]);
+        } else {
+          return parseInt(a.duration.split(":")[0]) - parseInt(b.duration.split(":")[0]);
+        }
+      })
+    }
 
+  }
   onChange = evt => {
     this.setState({ [evt.target.id]: evt.target.value });
     this.sortFlights(evt);
